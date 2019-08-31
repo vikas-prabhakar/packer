@@ -1,0 +1,56 @@
+{
+ "variables":{
+    "region": "{{env `AWS_REGION`}}",
+    "vpc_id": "{{env `AWS_VPC_ID`}}",
+    "subnet_id": "{{subnet_id}}",
+    "source_ami": "{{source_ami}}",
+    "ssh_username": "ubuntu"
+ },
+ "builders": [{
+  "type": "amazon-ebssurrogate",
+  "ami_virtualization_type": "hvm",
+  "region": "{{user `region`}}",
+  "instance_type": "t2.micro",
+  "vpc_id": "{{user `vpc_id`}}",
+  "subnet_id": "{{user `subnet_id`}}",
+  "ssh_username": "{{user `ssh_username`}}",
+  "source_ami": "{{user `source_ami`}}",
+  "ami_name": "packer-ubuntu-16-{{timestamp}}",
+  "ami_description": "Amazon Linux ubutnu 16.04 with hardening",
+  "launch_block_device_mappings": [{
+     "delete_on_termination": false,
+     "device_name": "/dev/xvdf",
+     "volume_type": "gp2",
+     "volume_size": 75
+    }
+   ],
+  "ami_root_device": {
+    "source_device_name": "/dev/xvdf",
+    "device_name": "/dev/xvda",
+    "delete_on_termination": true,
+    "volume_size": "75",
+    "volume_type": "gp2"
+   },
+  "run_tags" : {
+    "Name": "packer-ubuntu-16-{{timestamp}}",
+    "Author": "vikas_prabhakar"
+    }
+ }],
+ "provisioners": [{
+    "type": "shell",
+    "execute_command": "echo 'password' | sudo -S bash {{.Path}}",
+    "script": "scripts/lvm_partitions.sh"
+
+  },
+ {
+ "type": "file",
+  "source": "scripts/grub_configure.sh",
+  "destination": "/mnt/tmp/grub_configure.sh"
+ },
+ {
+ "type": "shell",
+ "execute_command": "sudo {{.Vars}} sh {{.Path}}",
+ "script": "scripts/chroot.sh"
+ }
+   ]
+}
