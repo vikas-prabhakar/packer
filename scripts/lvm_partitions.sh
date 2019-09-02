@@ -69,12 +69,15 @@ tune2fs -m 0 /dev/mapper/vg_sys-lv_home
 
 mount /dev/mapper/vg_sys-lv_root ${mntpoint}/
 
-mkdir -p ${mntpoint}/var ${mntpoint}/tmp  ${mntpoint}/home ${mntpoint}/var/tmp ${mntpoint}/var/log ${mntpoint}/var/log/audit
+mkdir -p ${mntpoint}/var ${mntpoint}/tmp  ${mntpoint}/home 
 mount /dev/mapper/vg_sys-lv_var ${mntpoint}/var
+mkdir -p  ${mntpoint}/var/tmp
 mount /dev/mapper/vg_sys-lv_varlog ${mntpoint}/var/log
 mount /dev/mapper/vg_sys-lv_home ${mntpoint}/home
 mount /dev/mapper/vg_sys-lv_tmp ${mntpoint}/tmp
+mkdir -p ${mntpoint}/var/tmp
 mount /dev/mapper/vg_sys-lv_vartmp ${mntpoint}/var/tmp
+mkdir -p ${mntpoint}/var/log/audit
 mount /dev/mapper/vg_sys-lv_varlogaudit ${mntpoint}/var/log/audit
 swapon -v /dev/vg_sys/lv_swap
 
