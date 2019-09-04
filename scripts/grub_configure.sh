@@ -18,5 +18,4 @@ update-grub2 -o /boot/grub/grub.cfg
 #Install LVM related modules 
 grub-install --modules 'part_gpt part_msdos lvm' /dev/xvdf
 
-dd if=/dev/xvdf of=boot.bin bs=512 count=1
 exit
